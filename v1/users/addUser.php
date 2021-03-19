@@ -1,0 +1,3 @@
+<?php
+//register new user
+?>
