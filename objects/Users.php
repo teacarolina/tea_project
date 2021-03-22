@@ -1,5 +1,6 @@
 <?php
 
+//vilka private $ ska vara med? 
 class Users {
     private $database_connection;
     private $user_id; 
@@ -14,13 +15,13 @@ class Users {
 
     function createUser($username_IN, $user_password_IN, $user_email_IN, $user_role_IN) {
 
+        //OBS! kan man lägga den här utanför så alla når samma?
         $error = new stdClass();
         if(!empty($username_IN) && !empty($user_password_IN) && !empty($user_email_IN) && !empty($user_role_IN)) {
 
             $sql = "SELECT id FROM users WHERE username = :username_IN";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":username_IN", $username_IN);
-
             
             if(!$statement->execute()) {
                 $error->message = "Could not execute query";

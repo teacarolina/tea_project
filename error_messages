@@ -1,0 +1,26 @@
+code = "0001"
+message = "Could not execute query"
+
+code = "0002"
+message = "The user is already registered"
+
+code = "0003"
+message = "Could not create user"
+
+code = "0004"
+message = "All arguments needs a value"
+
+code = "0005"
+message = "User doesn't exist"
+        
+code = "0006"
+message = "The product is already registered"
+
+code = "0007"
+message = "Could not create product"
+
+code = "0008"
+message = "Product doesn't exist"
+
+code = "0009"
+message = "Product id is not specified"
