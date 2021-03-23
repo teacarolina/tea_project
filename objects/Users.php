@@ -7,17 +7,17 @@ class Users {
     private $username; 
     private $user_password;
     private $user_email; 
-    private $user_role; 
+    //private $user_role; 
 
     function __construct($db) {
         $this->database_connection = $db;
     }
-
-    function createUser($username_IN, $user_password_IN, $user_email_IN, $user_role_IN) {
+                            //$user_role_IN
+    function createUser($username_IN, $user_password_IN, $user_email_IN) {
 
         //OBS! kan man lägga den här utanför så alla når samma?
-        $error = new stdClass();
-        if(!empty($username_IN) && !empty($user_password_IN) && !empty($user_email_IN) && !empty($user_role_IN)) {
+        $error = new stdClass();    //&& !empty($user_role_IN)
+        if(!empty($username_IN) && !empty($user_password_IN) && !empty($user_email_IN)) {
 
             $sql = "SELECT id FROM users WHERE username = :username_IN";
             $statement = $this->database_connection->prepare($sql);
@@ -37,13 +37,13 @@ class Users {
                 print_r(json_encode($error));
                 die();
             }
-
-            $sql = "INSERT INTO users (username, password, email, role) VALUES (:username_IN, :user_password_IN, :user_email_IN, :user_role_IN)";
+                                                //role                                      //, :user_role_IN
+            $sql = "INSERT INTO users (username, password, email) VALUES (:username_IN, :user_password_IN, :user_email_IN)";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":username_IN", $username_IN);
             $statement->bindParam(":user_password_IN", $user_password_IN);
             $statement->bindParam(":user_email_IN", $user_email_IN);
-            $statement->bindParam(":user_role_IN", $user_role_IN);
+            //$statement->bindParam(":user_role_IN", $user_role_IN);
 
             if(!$statement->execute()) {
                 $error->message = "Could not create user";
@@ -55,9 +55,9 @@ class Users {
             $this->username = $username_IN;
             $this->password = $user_password_IN;
             $this->email = $user_email_IN;
-            $this->role = $user_role_IN;
-            
-            echo "User created. Username: $this->username, Password: $this->password, Email: $this->email, Role: $this->role";
+            //$this->role = $user_role_IN;
+                                                    //Role: $this->role
+            echo "User created. Username: $this->username, Password: $this->password, Email: $this->email";
             die();
         
         } else {

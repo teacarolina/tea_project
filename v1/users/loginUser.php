@@ -14,6 +14,8 @@ if(!empty($_GET['username'])) {
 
 if(!empty($_GET['password'])) {
     $user_password = $_GET['password'];
+    $salt = "jfjeale8?=)/ghhda54#";
+    $user_password = md5($user_password.$salt);
 }
 
 $user = new Users($pdo);
