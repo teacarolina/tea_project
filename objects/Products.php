@@ -7,7 +7,6 @@ class Products {
     private $product_name; 
     private $product_description;
     private $product_price; 
-    private $product_image; 
 
     function __construct($db) {
         $this->database_connection = $db;
