@@ -24,3 +24,6 @@ message = "Product doesn't exist"
 
 code = "0009"
 message = "Product id is not specified"
+
+code = "0010"
+message = "Could not create cart"

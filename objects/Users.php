@@ -7,6 +7,7 @@ class Users {
     private $username; 
     private $user_password;
     private $user_email; 
+    private $token;
     //private $user_role; 
 
     function __construct($db) {
@@ -87,17 +88,28 @@ class Users {
                 print_r(json_encode($error));
                 die();   
             }
-        
+
+            //vill jag ha den här koden här? eller ska det starta när man lägger något i varukorgen? 
             while($row = $statement->fetch()) {
-            session_start();
-            $_SESSION['id'] = $row['id'];
-            $_SESSION['username'] = $row['username'];
-            $_SESSION['password'] = $row['password'];
-            $_SESSION['email'] = $row['email'];
-            $_SESSION['role'] = $row['role'];
+                $username_IN = $row['username'];
+                $user_id_IN = $row['id'];
             }
 
-            print_r("Session started for: " . $_SESSION['username']);
+            $token = md5(time() . $user_id_IN . $username_IN);  
+        
+            $sql = "INSERT INTO carts (TimeCreated, token, UserId) VALUES (NOW(), :token_IN, :user_id_IN)";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":token_IN", $token);
+            $statement->bindParam(":user_id_IN", $user_id_IN);
+        
+            if(!$statement->execute()) {
+                $error->message = "Could not create cart";
+                $error->code = "0010";
+                print_r(json_encode($error));
+                die();
+            }
+
+            print_r("Session started for: " . $username_IN);
             die();
 
             } else {

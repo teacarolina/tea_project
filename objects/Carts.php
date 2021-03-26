@@ -19,65 +19,74 @@ class Carts {
     function __construct($db) {
         $this->database_connection = $db;
     }
-
+  
     //OBS! hur lägger jag till flera produkter i samma cart?
-//     function addToCart($product_id_IN, $product_quantity_IN, $cart_create_date_IN, $user_id_IN) {
+    function addToCart($username_IN, $product_id_IN, $product_quantity_IN) {
+        
+        $error = new stdClass();
+        if(!empty($product_id_IN) && !empty($product_quantity_IN)) {
 
-//         //OBS! kan man lägga den här utanför så alla når samma?
-//         $error = new stdClass();
-//         if(!empty($product_id_IN) && !empty($product_quantity_IN) && !empty($user_id_IN)) {
+            $sql = "SELECT ProductName FROM products WHERE id = :product_id_IN";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":product_id_IN", $product_id_IN);
+            
+            if(!$statement->execute()) {
+                $error->message = "Could not execute query";
+                $error->code = "0001";
+                print_r(json_encode($error));
+                die();   
+            }
+            
+            $number_of_rows = $statement->rowCount();
+            if($number_of_rows < 1) {
+            echo "PRODUKTEN FINNS INTE-meddelande";
+            //$error->message = "The product is already registered"
+            //$error->code = "0006";
+            //print_r(json_encode($error));
+            die();
+            }
 
-//             $sql = "SELECT ProductName FROM products WHERE id = :product_id_IN";
-//             $statement = $this->database_connection->prepare($sql);
-//             $statement->bindParam(":product_id_IN", $product_id_IN);
+            //hur får jag med token så att när man har loggat in så har man samma kundvagn i en timme?
+            //ska vagnen skapas i samband med första produkten istället? 
 
-//             if(!$statement->execute()) {
-//                 $error->message = "Could not execute query";
-//                 $error->code = "0001";
-//                 print_r(json_encode($error));
-//                 die();   
-//             }
+            $sql = "SELECT carts.Id FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":username_IN", $username_IN);
+            $statement->execute();
 
-//             $number_of_rows = $statement->rowCount();
-//             if($number_of_rows < 1) {
-//                 //PRODUKTEN FINNS INTE-meddelande
+            $row = $statement->fetch();
+            $cart_id_IN = $row['Id'];
 
-//                 //$error->message = "The product is already registered";
-//                 //$error->code = "0006";
-//                 //print_r(json_encode($error));
-//                 //die();
-//             }
+            $sql = "INSERT INTO cartitems (CartId, ProductId, quantity) VALUES (:cart_id_IN, :product_id_IN, :product_quantity_IN)";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":cart_id_IN", $cart_id_IN);
+            $statement->bindParam(":product_id_IN", $product_id_IN);
+            $statement->bindParam(":product_quantity_IN", $product_quantity_IN);
 
-//             $sql = "INSERT INTO carts (ProductId, quantity, CreateDate, UserId) VALUES (:product_id_IN, :product_quantity_IN, NOW(), :user_id_IN)";
-//             $statement = $this->database_connection->prepare($sql);
-//             $statement->bindParam(":product_id_IN", $product_id_IN);
-//             $statement->bindParam(":product_quantity_IN", $product_quantity_IN);
-//             $statement->bindParam(":user_id_IN", $user_id_IN);
-
-//             if(!$statement->execute()) {
-//                 //KUNDE INTE LÄGGA TILL I VARUKORG
+            if(!$statement->execute()) {
+                echo "KUNDE INTE LÄGGA TILL I VARUKORG-meddelande";
                 
 //                 //$error->message = "Could not create product";
 //                 //$error->code = "0007";
 //                 //print_r(json_encode($error));
-//                 //die();
-//             }
+                die();
+            }
 
-//             //$this->productname = $product_name_IN;
-//             //$this->description = $product_description_IN;
-//             //$this->price = $product_price_IN;
+                //$this->productname = $product_name_IN;
+             //$this->description = $product_description_IN;
+             //$this->price = $product_price_IN;
+             //echo "Product created. Product name: $this->productname, Description: $this->description, Price: $this->price";
+             //die();
             
-//             //echo "Product created. Product name: $this->productname, Description: $this->description, Price: $this->price";
-//             //die();
-            
-//             echo "Product added";
+                echo "Product added";
+                die(); 
 
-//         } else {
-//             $error->message = "All arguments needs a value";
-//             $error->code = "0004";
-//             print_r(json_encode($error));
-//             die();
-//         }
-//     }
-// }
+         } else {
+             $error->message = "All arguments needs a value";
+             $error->code = "0004";
+             print_r(json_encode($error));
+             die();
+            }
+    }
+ }
 ?>
