@@ -96,11 +96,16 @@ class Users {
             }
 
             $token = md5(time() . $user_id_IN . $username_IN);  
-        
-            $sql = "INSERT INTO carts (TimeCreated, token, UserId) VALUES (NOW(), :token_IN, :user_id_IN)";
+                                                                            //NOW()
+            $sql = "INSERT INTO carts (TimeCreated, token, UserId) VALUES (:test, :token_IN, :user_id_IN)";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":token_IN", $token);
             $statement->bindParam(":user_id_IN", $user_id_IN);
+            $date = (new DateTime())->format('Y-m-d H:i:s');
+            //$date = json_encode($date);
+       
+            $statement->bindParam(":test", $date);
+
         
             if(!$statement->execute()) {
                 $error->message = "Could not create cart";
