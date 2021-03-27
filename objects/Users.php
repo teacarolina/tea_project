@@ -54,11 +54,11 @@ class Users {
             }
 
             $this->username = $username_IN;
-            $this->password = $user_password_IN;
-            $this->email = $user_email_IN;
+            //$this->password = $user_password_IN;
+            //$this->email = $user_email_IN;
             //$this->role = $user_role_IN;
-                                                    //Role: $this->role
-            echo "User created. Username: $this->username, Password: $this->password, Email: $this->email";
+                                                    //Role: $this->role //Password: $this->password //, Email: $this->email
+            echo "User created: $this->username";
             die();
         
         } else {
