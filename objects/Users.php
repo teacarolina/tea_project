@@ -89,6 +89,12 @@ class Users {
                 die();   
             }
 
+            $validate_token = $this->validateToken($username_IN);
+            if(!empty($validate_token)) {
+                echo "Already logged in";
+                die();
+            }
+
             //vill jag ha den här koden här? eller ska det starta när man lägger något i varukorgen? 
             while($row = $statement->fetch()) {
                 $username_IN = $row['username'];
@@ -104,9 +110,9 @@ class Users {
             $date = (new DateTime())->format('Y-m-d H:i:s');
             //$date = json_encode($date);
        
+            //ändra variabelnamn till något annat än test
             $statement->bindParam(":test", $date);
 
-        
             if(!$statement->execute()) {
                 $error->message = "Could not create cart";
                 $error->code = "0010";
@@ -116,13 +122,45 @@ class Users {
 
             print_r("Session started for: " . $username_IN);
             die();
-
             } else {
                 $error->message = "All arguments needs a value";
                 $error->code = "0004";
                 print_r(json_encode($error));
                 die();
         }
+    }
+
+    function validateToken($username_IN) {
+        $sql = "SELECT token, TimeCreated FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN AND TimeCreated > :active_time_IN";        
+        $statement = $this->database_connection->prepare($sql);
+        $statement->bindParam(":username_IN", $username_IN);
+       
+        $active_time = (new DateTime())->modify('-1 hours')->format('Y-m-d H:i:s');
+
+        $statement->bindParam(":active_time_IN", $active_time);
+        $statement->execute();
+
+        if($row = $statement->fetch()) {
+            return $row['token'];
+        } else {
+            $sql = "SELECT token, TimeCreated FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN AND TimeCreated < :active_time_IN";        
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":username_IN", $username_IN);
+       
+            $active_time = (new DateTime())->modify('-1 hours')->format('Y-m-d H:i:s');
+     
+            $statement->bindParam(":active_time_IN", $active_time);
+            $statement->execute();
+
+            if($row = $statement->fetch()) {
+            $token = $row['token'];
+
+            $sql = "DELETE FROM carts WHERE token = :token_IN";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":token_IN", $token);
+            $statement->execute();
+            }
+        } 
     }
 }
 

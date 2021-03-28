@@ -67,6 +67,8 @@ class Carts {
                 die();   
             }
 
+            $update_token = $this->updateToken($username_IN);
+
             echo "Product added to cart.";
             die();
 
@@ -75,7 +77,7 @@ class Carts {
             $error->code = "0004";
             print_r(json_encode($error));
             die();
-            }
+        }
     }
 
     function validateToken($username_IN) {
@@ -147,6 +149,8 @@ class Carts {
         $statement->bindParam(":cart_item_id_IN", $cart_item_id);
         $statement->execute();
 
+        $update_token = $this->updateToken($username_IN);
+
         $this->id = $product_id_IN;
 
         echo "Product with id $this->id deleted.";
@@ -180,5 +184,23 @@ class Carts {
         }
         echo "<tr>" . "<th>Total amount:</th>" .  "<td>$total</td>" . "</tr>" . "</table>";
     }
+
+    function updateToken($username_IN) {
+        $sql = "SELECT Id FROM users WHERE username = :username_IN";
+        $statement = $this->database_connection->prepare($sql);
+        $statement->bindParam(":username_IN", $username_IN);
+        $statement->execute();
+
+        $row = $statement->fetch();
+        $user_id = $row['Id'];
+
+        $sql = "UPDATE carts SET TimeCreated = :update_time_created WHERE UserId = :user_id_IN";
+        $statement = $this->database_connection->prepare($sql);
+        $date = (new DateTime())->format('Y-m-d H:i:s');
+        $statement->bindParam(":update_time_created", $date);
+        $statement->bindParam(":user_id_IN", $user_id);
+        $statement->execute();
+    }
 }
+
 ?>
