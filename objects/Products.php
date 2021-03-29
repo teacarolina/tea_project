@@ -192,6 +192,17 @@ class Products {
             die();   
         }
     }
+
+    function searchProductName($search_word_IN) {
+
+        $sql = "SELECT ProductName FROM products WHERE ProductName LIKE '%$search_word_IN%'";
+        $statement = $this->database_connection->prepare($sql);
+        $statement->execute();
+
+        echo "<pre>";
+        print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));
+        echo "</pre>";
+    }
 }
 
 ?>

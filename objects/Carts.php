@@ -16,7 +16,7 @@ class Carts {
     function addToCart($username_IN, $product_id_IN, $product_quantity_IN) {
         
         $error = new stdClass();
-        if(!empty($product_id_IN) && !empty($product_quantity_IN)) {
+        if(!empty($username_IN) && !empty($product_id_IN) && !empty($product_quantity_IN)) {
 
             $sql = "SELECT ProductName FROM products WHERE id = :product_id_IN";
             $statement = $this->database_connection->prepare($sql);
@@ -39,12 +39,9 @@ class Carts {
 
             $validate_token = $this->validateToken($username_IN);
 
-            //kan jag här skriva om koden så den går efter token?? select cart where token is token?
-            //då kanske jag inte behöver skriva username i functionen när jag kallar på den? 
-
-            $sql = "SELECT carts.Id FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN";
+            $sql = "SELECT carts.Id FROM carts WHERE token = :token_IN";
             $statement = $this->database_connection->prepare($sql);
-            $statement->bindParam(":username_IN", $username_IN);
+            $statement->bindParam(":token_IN", $validate_token);
             $statement->execute();
 
             $row = $statement->fetch();
@@ -78,6 +75,8 @@ class Carts {
 
     function validateToken($username_IN) {
 
+        $error = new stdClass();
+
         $sql = "SELECT token, TimeCreated FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN AND TimeCreated > :active_time_IN";        
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);
@@ -88,7 +87,6 @@ class Carts {
         $statement->execute();
 
         if($row = $statement->fetch()) {
-             //kan användas i andra funktionen att referera till? 
             return $row['token'];
 
         } else {
@@ -109,12 +107,15 @@ class Carts {
             $statement->bindParam(":token_IN", $token);
             $statement->execute();
             
-            //lägg error message??
-            //ska det vara två else?
-            echo "Old session have ended and the cart have been emptied. Log in to start session";
+            echo "The cart has been emptied";
+            $error->message = "Old session ended. Log in to start session";
+            $error->code = "0011";
+            print_r(json_encode($error));
             die();
             } else {
-                echo "Old session ended. Log in to start session";
+                $error->message = "Old session ended. Log in to start session";
+                $error->code = "0011";
+                print_r(json_encode($error));
                 die();
             }
         } 
@@ -122,12 +123,14 @@ class Carts {
 
     function deleteFromCart($username_IN, $product_id_IN) {
 
-        //kan man göra samma här med return token????
         $error = new stdClass();
         if(!empty($username_IN) && !empty($product_id_IN)) {
-        $sql = "SELECT cartitems.Id FROM cartitems JOIN carts ON cartitems.CartId = carts.Id JOIN users ON carts.UserId = users.Id WHERE username = :username_IN AND cartitems.ProductId = :product_id_IN";
+
+        $validate_token = $this->validateToken($username_IN);
+
+        $sql = "SELECT cartitems.Id FROM cartitems JOIN carts ON cartitems.CartId = carts.Id WHERE token = :token_IN AND cartitems.ProductId = :product_id_IN";
         $statement = $this->database_connection->prepare($sql);
-        $statement->bindParam(":username_IN", $username_IN);
+        $statement->bindParam(":token_IN", $validate_token);
         $statement->bindParam(":product_id_IN", $product_id_IN);
         $statement->execute();
 

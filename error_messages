@@ -27,3 +27,6 @@ message = "Product id is not specified"
 
 code = "0010"
 message = "Could not create cart"
+
+code = "0011"
+message = "Old session ended. Log in to start session"
