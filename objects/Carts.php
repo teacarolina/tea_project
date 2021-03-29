@@ -1,22 +1,15 @@
 <?php 
 
-//vilka private $ ska vara med? 
 class Carts {
+
     private $database_connection;
-    private $cart_id;
-    private $product_id; 
-    private $product_quantity; 
-    private $cart_time_created;
-    private $cart_time_updated;
-    private $token; 
-    private $user_id; 
+    private $id;
     private $product_name; 
-    private $product_price; 
-    private $username; 
-    private $user_password;
-    private $user_email; 
+    private $price;
+    private $quantity; 
 
     function __construct($db) {
+
         $this->database_connection = $db;
     }
   
@@ -84,6 +77,7 @@ class Carts {
     }
 
     function validateToken($username_IN) {
+
         $sql = "SELECT token, TimeCreated FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN AND TimeCreated > :active_time_IN";        
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);
@@ -116,6 +110,7 @@ class Carts {
             $statement->execute();
             
             //lägg error message??
+            //ska det vara två else?
             echo "Old session have ended and the cart have been emptied. Log in to start session";
             die();
             } else {
@@ -168,7 +163,8 @@ class Carts {
         }
     }
 
-    function checkoutCart($username_IN) {      
+    function checkoutCart($username_IN) {   
+
         $sql = "SELECT * FROM carts JOIN cartitems ON carts.Id = cartitems.CartId JOIN users ON carts.UserId = users.Id JOIN products ON cartitems.ProductId = products.Id WHERE users.Username = :username_IN";
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);
@@ -179,17 +175,18 @@ class Carts {
         echo "<table>" . "<tr>" . "<th>Product name</th>" . "<th>Price</th>" . "<th>Quantity</th>" . "</tr>";
         $total = 0; 
         while($row = $statement->fetch()) {
-            $this->productname = $row['ProductName'];
+            $this->product_name = $row['ProductName'];
             $this->price = $row['Price'];
             $this->quantity = $row['Quantity'];
             $total = $total + ($row['Price'] * $row['Quantity']);
         
-            echo "<tr>" . "<td>$this->productname</td>" . "<td>$this->price</td>" . "<td>$this->quantity</td>" . "</tr>";
+            echo "<tr>" . "<td>$this->product_name</td>" . "<td>$this->price</td>" . "<td>$this->quantity</td>" . "</tr>";
         }
         echo "<tr>" . "<th>Total amount:</th>" .  "<td>$total</td>" . "</tr>" . "</table>";
     }
 
     function updateToken($username_IN) {
+        
         $sql = "SELECT Id FROM users WHERE username = :username_IN";
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);

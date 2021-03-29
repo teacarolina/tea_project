@@ -1,20 +1,20 @@
 <?php 
 
-//vilka private $ ska vara med? 
 class Products {
+
     private $database_connection;
-    private $product_id; 
+    private $id; 
     private $product_name; 
-    private $product_description;
-    private $product_price; 
+    private $description;
+    private $price; 
 
     function __construct($db) {
+
         $this->database_connection = $db;
     }
 
     function createProduct($product_name_IN, $product_description_IN, $product_price_IN) {
 
-        //OBS! kan man lägga den här utanför så alla når samma?
         $error = new stdClass();
         if(!empty($product_name_IN) && !empty($product_description_IN) && !empty($product_price_IN)) {
 
@@ -50,11 +50,11 @@ class Products {
                 die();
             }
 
-            $this->productname = $product_name_IN;
+            $this->product_name = $product_name_IN;
             $this->description = $product_description_IN;
             $this->price = $product_price_IN;
             
-            echo "Product created. Product name: $this->productname, Description: $this->description, Price: $this->price";
+            echo "Product created. Product name: $this->product_name, Description: $this->description, Price: $this->price";
             die();
         
         } else {
@@ -66,6 +66,7 @@ class Products {
     }
 
     function getAllProducts() {
+        
         $sql = "SELECT id, ProductName FROM products";
         $statement = $this->database_connection->prepare($sql);
         $statement->execute();

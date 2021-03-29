@@ -6,7 +6,6 @@ include("../../objects/Carts.php");
 $product_id = "";
 $product_quantity = "";
 $username = "";
-// $cart_create_date = "";
 
 if(!empty($_GET['productid'])) {
      $product_id = $_GET['productid'];

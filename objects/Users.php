@@ -1,22 +1,17 @@
 <?php
 
-//vilka private $ ska vara med? 
 class Users {
+
     private $database_connection;
-    private $user_id; 
     private $username; 
-    private $user_password;
-    private $user_email; 
-    private $token;
-    //private $user_role; 
 
     function __construct($db) {
+
         $this->database_connection = $db;
     }
                             
     function createUser($username_IN, $user_password_IN, $user_email_IN) {
 
-        //OBS! kan man lägga den här utanför så alla når samma?
         $error = new stdClass();   
         if(!empty($username_IN) && !empty($user_password_IN) && !empty($user_email_IN)) {
 
@@ -124,6 +119,7 @@ class Users {
     }
 
     function validateToken($username_IN) {
+        
         $sql = "SELECT token, TimeCreated FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN AND TimeCreated > :active_time_IN";        
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);
