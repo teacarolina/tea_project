@@ -13,11 +13,11 @@ class Users {
     function __construct($db) {
         $this->database_connection = $db;
     }
-                            //$user_role_IN
+                            
     function createUser($username_IN, $user_password_IN, $user_email_IN) {
 
         //OBS! kan man lägga den här utanför så alla når samma?
-        $error = new stdClass();    //&& !empty($user_role_IN)
+        $error = new stdClass();   
         if(!empty($username_IN) && !empty($user_password_IN) && !empty($user_email_IN)) {
 
             $sql = "SELECT id FROM users WHERE username = :username_IN";
@@ -38,13 +38,12 @@ class Users {
                 print_r(json_encode($error));
                 die();
             }
-                                                //role                                      //, :user_role_IN
+            //role is set as default "user" for security so role "admin" can only be set manually in db               
             $sql = "INSERT INTO users (username, password, email) VALUES (:username_IN, :user_password_IN, :user_email_IN)";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":username_IN", $username_IN);
             $statement->bindParam(":user_password_IN", $user_password_IN);
             $statement->bindParam(":user_email_IN", $user_email_IN);
-            //$statement->bindParam(":user_role_IN", $user_role_IN);
 
             if(!$statement->execute()) {
                 $error->message = "Could not create user";
@@ -54,10 +53,7 @@ class Users {
             }
 
             $this->username = $username_IN;
-            //$this->password = $user_password_IN;
-            //$this->email = $user_email_IN;
-            //$this->role = $user_role_IN;
-                                                    //Role: $this->role //Password: $this->password //, Email: $this->email
+                                                   
             echo "User created: $this->username";
             die();
         
@@ -94,24 +90,21 @@ class Users {
                 echo "Already logged in";
                 die();
             }
-
-            //vill jag ha den här koden här? eller ska det starta när man lägger något i varukorgen? 
+ 
             while($row = $statement->fetch()) {
                 $username_IN = $row['username'];
                 $user_id_IN = $row['id'];
             }
 
             $token = md5(time() . $user_id_IN . $username_IN);  
-                                                                            //NOW()
-            $sql = "INSERT INTO carts (TimeCreated, token, UserId) VALUES (:test, :token_IN, :user_id_IN)";
+                                                                            
+            $sql = "INSERT INTO carts (TimeCreated, token, UserId) VALUES (:cart_time_created, :token_IN, :user_id_IN)";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":token_IN", $token);
             $statement->bindParam(":user_id_IN", $user_id_IN);
             $date = (new DateTime())->format('Y-m-d H:i:s');
-            //$date = json_encode($date);
        
-            //ändra variabelnamn till något annat än test
-            $statement->bindParam(":test", $date);
+            $statement->bindParam(":cart_time_created", $date);
 
             if(!$statement->execute()) {
                 $error->message = "Could not create cart";

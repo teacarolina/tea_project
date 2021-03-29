@@ -1,9 +1,7 @@
 <?php
 //delete product from cart
-
-//OBS! fixa så det blir rätt sökväg för filerna
-include("C:/xampp/htdocs/tea_project/config/database_handler.php");
-include("C:/xampp/htdocs/tea_project/objects/Carts.php");
+include("../../config/database_handler.php");
+include("../../objects/Carts.php");
 
 $username = "";
 $product_id = "";

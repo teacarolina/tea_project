@@ -1,9 +1,7 @@
 <?php
 //login user
-
-//OBS! fixa så det blir rätt sökväg för filerna
-include("C:/xampp/htdocs/tea_project/config/database_handler.php");
-include("C:/xampp/htdocs/tea_project/objects/Users.php");
+include("../../config/database_handler.php");
+include("../../objects/Users.php");
 
 $username = "";
 $user_password = "";

@@ -1,9 +1,7 @@
 <?php
 //delete product
-
-//OBS! fixa så det blir rätt sökväg för filerna
-include("C:/xampp/htdocs/tea_project/config/database_handler.php");
-include("C:/xampp/htdocs/tea_project/objects/Products.php");
+include("../../config/database_handler.php");
+include("../../objects/Products.php");
 
 $product_id = "";
 

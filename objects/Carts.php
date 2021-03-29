@@ -46,6 +46,9 @@ class Carts {
 
             $validate_token = $this->validateToken($username_IN);
 
+            //kan jag här skriva om koden så den går efter token?? select cart where token is token?
+            //då kanske jag inte behöver skriva username i functionen när jag kallar på den? 
+
             $sql = "SELECT carts.Id FROM carts JOIN users ON carts.UserId = users.Id WHERE users.username = :username_IN";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":username_IN", $username_IN);
@@ -124,6 +127,7 @@ class Carts {
 
     function deleteFromCart($username_IN, $product_id_IN) {
 
+        //kan man göra samma här med return token????
         $error = new stdClass();
         if(!empty($username_IN) && !empty($product_id_IN)) {
         $sql = "SELECT cartitems.Id FROM cartitems JOIN carts ON cartitems.CartId = carts.Id JOIN users ON carts.UserId = users.Id WHERE username = :username_IN AND cartitems.ProductId = :product_id_IN";
@@ -164,7 +168,7 @@ class Carts {
         }
     }
 
-    function checkoutCart($username_IN) {                                           
+    function checkoutCart($username_IN) {      
         $sql = "SELECT * FROM carts JOIN cartitems ON carts.Id = cartitems.CartId JOIN users ON carts.UserId = users.Id JOIN products ON cartitems.ProductId = products.Id WHERE users.Username = :username_IN";
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);
