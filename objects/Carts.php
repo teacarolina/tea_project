@@ -205,6 +205,17 @@ class Carts {
         $statement->bindParam(":user_id_IN", $user_id);
         $statement->execute();
     }
+
+    function sumOpenCarts() {
+
+        $sql = "SELECT carts.Id, SUM(price*quantity) AS 'Total cart amount' FROM carts JOIN cartitems ON carts.Id = cartitems.CartId JOIN products ON cartitems.ProductId = products.Id GROUP BY carts.Id";
+        $statement = $this->database_connection->prepare($sql);
+        $statement->execute();
+
+        echo "<pre>";
+        print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));
+        echo "</pre>";
+    }
 }
 
 ?>

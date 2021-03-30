@@ -1,5 +1,5 @@
 <?php
-//list all products
+//search products by product name 
 include("../../config/database_handler.php");
 include("../../objects/Products.php");
 

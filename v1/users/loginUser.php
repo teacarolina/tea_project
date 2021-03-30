@@ -3,15 +3,12 @@
 include("../../config/database_handler.php");
 include("../../objects/Users.php");
 
-$username = "";
-$user_password = "";
-
-if(!empty($_GET['username'])) {
-    $username = $_GET['username'];
+if(!empty($_POST['username'])) {
+    $username = $_POST['username'];
 }
 
-if(!empty($_GET['password'])) {
-    $user_password = $_GET['password'];
+if(!empty($_POST['password'])) {
+    $user_password = $_POST['password'];
     $salt = "jfjeale8?=)/ghhda54#";
     $user_password = md5($user_password.$salt);
 }

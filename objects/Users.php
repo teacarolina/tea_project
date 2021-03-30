@@ -15,9 +15,10 @@ class Users {
         $error = new stdClass();   
         if(!empty($username_IN) && !empty($user_password_IN) && !empty($user_email_IN)) {
 
-            $sql = "SELECT id FROM users WHERE username = :username_IN";
+            $sql = "SELECT id FROM users WHERE username = :username_IN OR email = :user_email_IN";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":username_IN", $username_IN);
+            $statement->bindParam(":user_email_IN", $user_email_IN);
             
             if(!$statement->execute()) {
                 $error->message = "Could not execute query";
