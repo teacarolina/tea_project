@@ -164,12 +164,27 @@ class Products {
         //ny ovanför $statement->execute();
 
         $number_of_rows = $statement->rowCount();
-          
+
         if($number_of_rows < 1) {
+            $sql = "SELECT ProductName FROM products WHERE id = :product_id_IN";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":product_id_IN", $product_id_IN);
+
+            $statement->execute();
+
+            if($row = $statement->fetch()) {
+                $current_name = $row['ProductName'];
+
+                if($current_name == $product_name_IN) {
+                echo "Product name is already $current_name";
+                die();
+                }
+            }
+
             $error->message = "Product doesn't exist";
             $error->code = "0008";
             print_r(json_encode($error));
-            die();   
+            die();  
         }
     }
 
@@ -191,10 +206,25 @@ class Products {
         $number_of_rows = $statement->rowCount();
           
         if($number_of_rows < 1) {
+            $sql = "SELECT description FROM products WHERE id = :product_id_IN";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":product_id_IN", $product_id_IN);
+
+            $statement->execute();
+
+            if($row = $statement->fetch()) {
+                $current_description = $row['description'];
+
+                if($current_description == $product_description_IN) {
+                echo "Description is already $current_description";
+                die();
+                }
+            }
+
             $error->message = "Product doesn't exist";
             $error->code = "0008";
             print_r(json_encode($error));
-            die();   
+            die();  
         }
     }
 
@@ -216,10 +246,25 @@ class Products {
         $number_of_rows = $statement->rowCount();
           
         if($number_of_rows < 1) {
+            $sql = "SELECT price FROM products WHERE id = :product_id_IN";
+            $statement = $this->database_connection->prepare($sql);
+            $statement->bindParam(":product_id_IN", $product_id_IN);
+
+            $statement->execute();
+
+            if($row = $statement->fetch()) {
+                $current_price = $row['price'];
+
+                if($current_price == $product_price_IN) {
+                echo "Price is already $current_price";
+                die();
+                }
+            }
+
             $error->message = "Product doesn't exist";
             $error->code = "0008";
             print_r(json_encode($error));
-            die();   
+            die();  
         }
     }
 
