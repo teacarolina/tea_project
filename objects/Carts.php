@@ -42,7 +42,14 @@ class Carts {
             $sql = "SELECT carts.Id FROM carts WHERE token = :token_IN";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":token_IN", $validate_token);
-            $statement->execute();
+
+            if(!$statement->execute()) {
+                $error->message = "Could not execute query";
+                $error->code = "0001";
+                print_r(json_encode($error));
+                die();   
+            }
+            //ny ovanför $statement->execute();
 
             $row = $statement->fetch();
             $cart_id_IN = $row['Id'];
@@ -84,7 +91,14 @@ class Carts {
         $active_time = (new DateTime())->modify('-1 hours')->format('Y-m-d H:i:s');
 
         $statement->bindParam(":active_time_IN", $active_time);
-        $statement->execute();
+
+        //ny
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
 
         if($row = $statement->fetch()) {
             return $row['token'];
@@ -97,7 +111,14 @@ class Carts {
             $active_time = (new DateTime())->modify('-1 hours')->format('Y-m-d H:i:s');
      
             $statement->bindParam(":active_time_IN", $active_time);
-            $statement->execute();
+
+            if(!$statement->execute()) {
+                $error->message = "Could not execute query";
+                $error->code = "0001";
+                print_r(json_encode($error));
+                die();   
+            }
+            // ny ovanför $statement->execute();
 
             if($row = $statement->fetch()) {
             $token = $row['token'];
@@ -105,7 +126,14 @@ class Carts {
             $sql = "DELETE FROM carts WHERE token = :token_IN";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":token_IN", $token);
-            $statement->execute();
+            
+            if(!$statement->execute()) {
+                $error->message = "Could not execute query";
+                $error->code = "0001";
+                print_r(json_encode($error));
+                die();   
+            }
+            // ny ovanför $statement->execute();
             
             echo "The cart has been emptied";
             $error->message = "Old session ended. Log in to start session";
@@ -113,7 +141,7 @@ class Carts {
             print_r(json_encode($error));
             die();
             } else {
-                $error->message = "Old session ended. Log in to start session";
+                $error->message = "No session for the specified user or no user specified";
                 $error->code = "0011";
                 print_r(json_encode($error));
                 die();
@@ -132,7 +160,14 @@ class Carts {
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":token_IN", $validate_token);
         $statement->bindParam(":product_id_IN", $product_id_IN);
-        $statement->execute();
+
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        // ny ovanför $statement->execute();
 
         $number_of_rows = $statement->rowCount();
           
@@ -149,7 +184,15 @@ class Carts {
         $sql = "DELETE FROM cartitems WHERE id = :cart_item_id_IN";
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":cart_item_id_IN", $cart_item_id);
-        $statement->execute();
+
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+
+        //ny ovanför $statement->execute();
 
         $update_token = $this->updateToken($username_IN);
 
@@ -171,7 +214,15 @@ class Carts {
         $sql = "SELECT * FROM carts JOIN cartitems ON carts.Id = cartitems.CartId JOIN users ON carts.UserId = users.Id JOIN products ON cartitems.ProductId = products.Id WHERE users.Username = :username_IN";
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);
-        $statement->execute();
+
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        
+        //ny ovanför $statement->execute();
 
         $validate_token = $this->validateToken($username_IN);
 
@@ -193,7 +244,14 @@ class Carts {
         $sql = "SELECT Id FROM users WHERE username = :username_IN";
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":username_IN", $username_IN);
-        $statement->execute();
+
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        // ny ovanför $statement->execute();
 
         $row = $statement->fetch();
         $user_id = $row['Id'];
@@ -203,14 +261,30 @@ class Carts {
         $date = (new DateTime())->format('Y-m-d H:i:s');
         $statement->bindParam(":update_time_created", $date);
         $statement->bindParam(":user_id_IN", $user_id);
-        $statement->execute();
+
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+
+        // ny ovanför $statement->execute();
     }
 
     function sumOpenCarts() {
 
         $sql = "SELECT carts.Id, SUM(price*quantity) AS 'Total cart amount' FROM carts JOIN cartitems ON carts.Id = cartitems.CartId JOIN products ON cartitems.ProductId = products.Id GROUP BY carts.Id";
         $statement = $this->database_connection->prepare($sql);
-        $statement->execute();
+
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        
+        //ny ovanför $statement->execute();
 
         echo "<pre>";
         print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));

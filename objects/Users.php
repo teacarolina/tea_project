@@ -71,11 +71,17 @@ class Users {
             $statement->bindParam(":username_IN", $username_IN);
             $statement->bindParam(":user_password_IN", $user_password_IN);
 
-            $statement->execute();
+            if(!$statement->execute()) {
+                $error->message = "Could not execute query";
+                $error->code = "0001";
+                print_r(json_encode($error));
+                die();   
+            }
+            //ny ovanför $statement->execute();
             $number_of_rows = $statement->rowCount();
             
             if($number_of_rows < 1) {
-                $error->message = "User doesn't exist";
+                $error->message = "Username or password is incorrect";
                 $error->code = "0005";
                 print_r(json_encode($error));
                 die();   
@@ -128,7 +134,13 @@ class Users {
         $active_time = (new DateTime())->modify('-1 hours')->format('Y-m-d H:i:s');
 
         $statement->bindParam(":active_time_IN", $active_time);
-        $statement->execute();
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        //ny ovanför $statement->execute();
 
         if($row = $statement->fetch()) {
             return $row['token'];
@@ -140,7 +152,13 @@ class Users {
             $active_time = (new DateTime())->modify('-1 hours')->format('Y-m-d H:i:s');
      
             $statement->bindParam(":active_time_IN", $active_time);
-            $statement->execute();
+            if(!$statement->execute()) {
+                $error->message = "Could not execute query";
+                $error->code = "0001";
+                print_r(json_encode($error));
+                die();   
+            }
+            //ny ovanför $statement->execute();
 
             if($row = $statement->fetch()) {
             $token = $row['token'];
@@ -148,7 +166,13 @@ class Users {
             $sql = "DELETE FROM carts WHERE token = :token_IN";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":token_IN", $token);
-            $statement->execute();
+            if(!$statement->execute()) {
+                $error->message = "Could not execute query";
+                $error->code = "0001";
+                print_r(json_encode($error));
+                die();   
+            }
+            //ny ovanför $statement->execute();
             }
         } 
     }

@@ -69,7 +69,13 @@ class Products {
         
         $sql = "SELECT id, ProductName FROM products";
         $statement = $this->database_connection->prepare($sql);
-        $statement->execute();
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        //ny ovanför $statement->execute();
         echo "<pre>";
         print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));
         echo "</pre>";
@@ -82,7 +88,13 @@ class Products {
         $sql = "DELETE FROM products WHERE id = :product_id_IN";
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":product_id_IN", $product_id_IN);
-        $statement->execute();
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        //ny ovanför $statement->execute();
 
         $number_of_rows = $statement->rowCount();
           
@@ -143,7 +155,13 @@ class Products {
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":product_id_IN", $product_id_IN);
         $statement->bindParam(":product_name_IN", $product_name_IN);
-        $statement->execute();
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        //ny ovanför $statement->execute();
 
         $number_of_rows = $statement->rowCount();
           
@@ -162,7 +180,13 @@ class Products {
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":product_id_IN", $product_id_IN);
         $statement->bindParam(":product_description_IN", $product_description_IN);
-        $statement->execute();
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        //ny ovanför $statement->execute();
 
         $number_of_rows = $statement->rowCount();
           
@@ -181,7 +205,13 @@ class Products {
         $statement = $this->database_connection->prepare($sql);
         $statement->bindParam(":product_id_IN", $product_id_IN);
         $statement->bindParam(":product_price_IN", $product_price_IN);
-        $statement->execute();
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        //ny ovanför $statement->execute();
 
         $number_of_rows = $statement->rowCount();
           
@@ -195,13 +225,27 @@ class Products {
 
     function searchProductName($search_word_IN) {
 
+        $error = new stdClass();
+        if(!empty($search_word_IN)) {
         $sql = "SELECT ProductName FROM products WHERE ProductName LIKE '%$search_word_IN%'";
         $statement = $this->database_connection->prepare($sql);
-        $statement->execute();
+        if(!$statement->execute()) {
+            $error->message = "Could not execute query";
+            $error->code = "0001";
+            print_r(json_encode($error));
+            die();   
+        }
+        //ny ovanför $statement->execute();
 
         echo "<pre>";
         print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));
         echo "</pre>";
+        } else {
+            $error->message = "All arguments needs a value";
+            $error->code = "0004";
+            print_r(json_encode($error));
+            die();
+        }
     }
 }
 
