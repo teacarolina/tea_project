@@ -75,7 +75,7 @@ class Products {
             print_r(json_encode($error));
             die();   
         }
-        //ny ovanför $statement->execute();
+        
         echo "<pre>";
         print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));
         echo "</pre>";
@@ -94,7 +94,6 @@ class Products {
             print_r(json_encode($error));
             die();   
         }
-        //ny ovanför $statement->execute();
 
         $number_of_rows = $statement->rowCount();
           
@@ -161,8 +160,7 @@ class Products {
             print_r(json_encode($error));
             die();   
         }
-        //ny ovanför $statement->execute();
-
+       
         $number_of_rows = $statement->rowCount();
 
         if($number_of_rows < 1) {
@@ -201,8 +199,7 @@ class Products {
             print_r(json_encode($error));
             die();   
         }
-        //ny ovanför $statement->execute();
-
+      
         $number_of_rows = $statement->rowCount();
           
         if($number_of_rows < 1) {
@@ -241,8 +238,7 @@ class Products {
             print_r(json_encode($error));
             die();   
         }
-        //ny ovanför $statement->execute();
-
+      
         $number_of_rows = $statement->rowCount();
           
         if($number_of_rows < 1) {
@@ -280,11 +276,20 @@ class Products {
             print_r(json_encode($error));
             die();   
         }
-        //ny ovanför $statement->execute();
 
+        $number_of_rows = $statement->rowCount();
+          
+        if($number_of_rows < 1) {
+            $error->message = "Product doesn't exist";
+            $error->code = "0008";
+            print_r(json_encode($error));
+            die();   
+        } 
+        
         echo "<pre>";
         print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));
         echo "</pre>";
+
         } else {
             $error->message = "All arguments needs a value";
             $error->code = "0004";

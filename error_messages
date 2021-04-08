@@ -30,3 +30,6 @@ message = "Could not create cart"
 
 code = "0011"
 message = "Old session ended. Log in to start session"
+
+code = "0012"
+message = "Enter a valid emailadress"

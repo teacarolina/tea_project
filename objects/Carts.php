@@ -49,7 +49,6 @@ class Carts {
                 print_r(json_encode($error));
                 die();   
             }
-            //ny ovanför $statement->execute();
 
             $row = $statement->fetch();
             $cart_id_IN = $row['Id'];
@@ -92,7 +91,6 @@ class Carts {
 
         $statement->bindParam(":active_time_IN", $active_time);
 
-        //ny
         if(!$statement->execute()) {
             $error->message = "Could not execute query";
             $error->code = "0001";
@@ -118,7 +116,6 @@ class Carts {
                 print_r(json_encode($error));
                 die();   
             }
-            // ny ovanför $statement->execute();
 
             if($row = $statement->fetch()) {
             $token = $row['token'];
@@ -133,7 +130,6 @@ class Carts {
                 print_r(json_encode($error));
                 die();   
             }
-            // ny ovanför $statement->execute();
             
             echo "The cart has been emptied";
             $error->message = "Old session ended. Log in to start session";
@@ -167,8 +163,7 @@ class Carts {
             print_r(json_encode($error));
             die();   
         }
-        // ny ovanför $statement->execute();
-
+       
         $number_of_rows = $statement->rowCount();
           
         if($number_of_rows < 1) {
@@ -191,8 +186,6 @@ class Carts {
             print_r(json_encode($error));
             die();   
         }
-
-        //ny ovanför $statement->execute();
 
         $update_token = $this->updateToken($username_IN);
 
@@ -222,8 +215,6 @@ class Carts {
             die();   
         }
         
-        //ny ovanför $statement->execute();
-
         $validate_token = $this->validateToken($username_IN);
 
         echo "<table>" . "<tr>" . "<th>Product name</th>" . "<th>Price</th>" . "<th>Quantity</th>" . "</tr>";
@@ -251,8 +242,7 @@ class Carts {
             print_r(json_encode($error));
             die();   
         }
-        // ny ovanför $statement->execute();
-
+   
         $row = $statement->fetch();
         $user_id = $row['Id'];
 
@@ -268,8 +258,6 @@ class Carts {
             print_r(json_encode($error));
             die();   
         }
-
-        // ny ovanför $statement->execute();
     }
 
     function sumOpenCarts() {
@@ -284,8 +272,6 @@ class Carts {
             die();   
         }
         
-        //ny ovanför $statement->execute();
-
         echo "<pre>";
         print_r(json_encode($statement->fetchAll(PDO::FETCH_ASSOC)));
         echo "</pre>";

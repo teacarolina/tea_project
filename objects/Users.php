@@ -15,6 +15,16 @@ class Users {
         $error = new stdClass();   
         if(!empty($username_IN) && !empty($user_password_IN) && !empty($user_email_IN)) {
 
+            $check_email = strpos($user_email_IN,"@");
+            $check_email2 = strpos($user_email_IN,".");
+
+            if(empty($check_email) || empty($check_email2)) {
+	            $error->message = "Enter a valid emailadress";
+                $error->code = "0012";
+                print_r(json_encode($error));
+                die();   
+            } 
+
             $sql = "SELECT id FROM users WHERE username = :username_IN OR email = :user_email_IN";
             $statement = $this->database_connection->prepare($sql);
             $statement->bindParam(":username_IN", $username_IN);
@@ -77,7 +87,7 @@ class Users {
                 print_r(json_encode($error));
                 die();   
             }
-            //ny ovanför $statement->execute();
+          
             $number_of_rows = $statement->rowCount();
             
             if($number_of_rows < 1) {
@@ -140,7 +150,6 @@ class Users {
             print_r(json_encode($error));
             die();   
         }
-        //ny ovanför $statement->execute();
 
         if($row = $statement->fetch()) {
             return $row['token'];
@@ -158,21 +167,19 @@ class Users {
                 print_r(json_encode($error));
                 die();   
             }
-            //ny ovanför $statement->execute();
 
             if($row = $statement->fetch()) {
-            $token = $row['token'];
+                $token = $row['token'];
 
-            $sql = "DELETE FROM carts WHERE token = :token_IN";
-            $statement = $this->database_connection->prepare($sql);
-            $statement->bindParam(":token_IN", $token);
-            if(!$statement->execute()) {
-                $error->message = "Could not execute query";
-                $error->code = "0001";
-                print_r(json_encode($error));
-                die();   
-            }
-            //ny ovanför $statement->execute();
+                $sql = "DELETE FROM carts WHERE token = :token_IN";
+                $statement = $this->database_connection->prepare($sql);
+                $statement->bindParam(":token_IN", $token);
+                if(!$statement->execute()) {
+                    $error->message = "Could not execute query";
+                    $error->code = "0001";
+                    print_r(json_encode($error));
+                    die();   
+                }
             }
         } 
     }
